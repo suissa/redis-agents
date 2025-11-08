@@ -42,15 +42,6 @@ npm run test:v1
 npm run test:v2
 ```
 
-## CI/CD por branch
-
-O repositório contém pipelines separados para cada versão do fluxo.
-
-- Branch `v1`: workflow `.github/workflows/ci-v1.yml` que executa `npm run build` e `npm run test:v1`.
-- Branch `v2`: workflow `.github/workflows/ci-v2.yml` que executa `npm run build` e `npm run test:v2`.
-
-Basta subir cada versão em sua respectiva branch para acionar o pipeline correspondente.
-
 ### Fluxo de agentes
 
 1. `GreetingAgent`
