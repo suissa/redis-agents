@@ -2,6 +2,7 @@ import { createRedisClient } from "./redis";
 import { FlowMemory } from "./memory";
 import { AgentManager } from "./AgentManager";
 import { createAgents } from "./agents";
+export * from "./identity";
 
 const bootstrap = async () => {
   const redis = createRedisClient();
