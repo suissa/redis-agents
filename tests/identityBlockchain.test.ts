@@ -21,10 +21,28 @@ describe("UniqueIdentityBlockchain", () => {
     const uid = blockchain.createIdentity("AgentTamper");
     expect(blockchain.authenticate(uid)).toBe(true);
 
-    const internalChain = blockchain as unknown as { chain: { transaction: { uid: string } }[] };
+    const internalChain = blockchain as unknown as { chain: { transaction: { uid: string }; hash: string }[] };
     internalChain.chain[1].transaction.uid = "fraude";
 
     expect(blockchain.validateChain()).toBe(false);
     expect(blockchain.authenticate(uid)).toBe(false);
+  });
+
+  it("rejeita blocos adulterados que não cumprem a prova de trabalho", () => {
+    const blockchain = new UniqueIdentityBlockchain(3);
+    blockchain.createIdentity("HonestAgent");
+
+    const internalChain = blockchain as unknown as {
+      chain: { transaction: { uid: string }; nonce: number; previousHash: string; hash: string; timestamp: number; index: number }[];
+      calculateHash: (block: any) => string;
+    };
+
+    // Fraude: altera transação e recalcula hash sem respeitar o alvo de dificuldade
+    const tampered = internalChain.chain[1];
+    tampered.transaction.uid = "fraude-sem-pow";
+    tampered.hash = internalChain.calculateHash(tampered);
+
+    expect(blockchain.validateChain()).toBe(false);
+    expect(blockchain.authenticate("fraude-sem-pow")).toBe(false);
   });
 });

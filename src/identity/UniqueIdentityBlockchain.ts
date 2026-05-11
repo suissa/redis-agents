@@ -43,6 +43,8 @@ export class UniqueIdentityBlockchain {
   }
 
   validateChain(): boolean {
+    const targetPrefix = "0".repeat(this.difficulty);
+
     for (let i = 1; i < this.chain.length; i += 1) {
       const currentBlock = this.chain[i];
       const previousBlock = this.chain[i - 1];
@@ -53,6 +55,10 @@ export class UniqueIdentityBlockchain {
 
       const recalculated = this.calculateHash({ ...currentBlock, hash: undefined });
       if (currentBlock.hash !== recalculated) {
+        return false;
+      }
+
+      if (!currentBlock.hash.startsWith(targetPrefix)) {
         return false;
       }
     }
